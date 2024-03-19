@@ -1,5 +1,6 @@
+import torch
 from torch.utils.data import Dataset
-from configuration import Configuration
+from config import Configuration
 from PIL import Image
 from torchvision import transforms
 from collections import Counter
@@ -15,9 +16,27 @@ class ChestXrayDataset(Dataset):
     The images are stored in the 'images' folder
     """
 
-    def __init__(self):
+    def __init__(self, transform=None):
         self.images = [f for f in os.listdir(Configuration.IMAGE_PATH) if f.endswith(".png")]
         self.data_entry = pd.read_csv(Configuration.DATA_ENTRY_PATH)[:len(self.images)]
+        self.transform = transform
+        self.label_map = {
+            'No Finding': 0,
+            'Infiltration': 1,
+            'Hernia': 2,
+            'Pneumothorax': 3,
+            'Mass': 4,
+            'Cardiomegaly': 5,
+            'Consolidation': 6,
+            'Emphysema': 7,
+            'Nodule': 8,
+            'Atelectasis': 9,
+            'Effusion': 10,
+            'Fibrosis': 11,
+            'Pneumonia': 12,
+            'Edema': 13,
+            'Pleural_Thickening': 14
+        }
 
     def __len__(self):
         # return the number of png files in the images folder
@@ -32,11 +51,18 @@ class ChestXrayDataset(Dataset):
         image_name = self.images[idx]
         image_path = os.path.join(Configuration.IMAGE_PATH, image_name)
         image = Image.open(image_path).convert("RGB")
-        # convert the image to tensor
-        image = transforms.ToTensor()(image)
+        if self.transform:
+            image = self.transform(image)
+        else:
+            image = transforms.ToTensor()(image)
         # get the label for the image
-        label = self.data_entry.loc[self.data_entry["Image Index"] == image_name]["Finding Labels"].values[0]
-        return image, label
+        labels = self.data_entry.loc[self.data_entry["Image Index"] == image_name]["Finding Labels"].values[0]
+        labels = labels.split("|")
+
+        label_vector = torch.zeros(self.get_num_classes(), dtype=torch.float32)
+        for label in labels:
+            label_vector[self.label_map[label]] = 1.0
+        return image, label_vector
 
     def get_labels(self) -> list[str]:
         """
@@ -60,3 +86,10 @@ class ChestXrayDataset(Dataset):
         distribution_df = distribution_df.reset_index().rename(columns={'index': 'Finding Labels'})
         distribution_df = distribution_df.sort_values('Count', ascending=False)
         return distribution_df
+
+    def get_num_classes(self) -> int:
+        """
+        Get the number of classes in the dataset
+        :return: number of classes
+        """
+        return len(self.get_labels())
