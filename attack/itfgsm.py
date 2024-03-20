@@ -25,7 +25,7 @@ class Itfgsm(Attack):
             image_grad = image.grad.data
             image = image + self.epsilon * image_grad.sign()
             image = torch.clamp(image, 0, 1)
-            image = image.clone().detach().requires_grad_(True)
+            image = image.detach().clone().requires_grad_(True)
         return image
 
     def untargeted_attack(self, image, ori_label):
@@ -38,5 +38,5 @@ class Itfgsm(Attack):
             image_grad = image.grad.data
             image = image - self.epsilon * image_grad.sign()
             image = torch.clamp(image, 0, 1)
-            image = image.clone().detach().requires_grad_(True)
+            image = image.detach().clone().requires_grad_(True)
         return image
