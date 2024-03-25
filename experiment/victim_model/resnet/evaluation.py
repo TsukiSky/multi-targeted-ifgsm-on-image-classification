@@ -8,7 +8,7 @@ from torchvision import transforms, models
 from dataset.dataset import ChestXrayDataset
 
 
-MODEL_PATH = "./resnet/chest_xray_resnet18.pth"
+MODEL_PATH = "./chest_xray_resnet18.pth"
 
 # Load the dataset
 transform = transforms.Compose([
@@ -36,6 +36,8 @@ with torch.no_grad():
         outputs = model(image)
         _, predicted = torch.max(outputs.data, 1)
         total += 1
-        correct += (predicted == label).sum().item()
+        if label[predicted] == 1:
+            correct += 1
+
 
 print(f"Accuracy of the model on the {total} test images: {100 * correct / total}%")
