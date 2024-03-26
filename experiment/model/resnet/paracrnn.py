@@ -7,7 +7,7 @@ import torchvision.models as models
 from dataset.dataset import ChestXrayDataset
 
 class ParallelCRNN(nn.Module):
-    def __init__(self, image_input_channels, text_input_size, num_classes):
+    def __init__(self, image_input_channels, num_classes):
         super(ParallelCRNN, self).__init__()
         
         # Image branch
@@ -20,33 +20,22 @@ class ParallelCRNN(nn.Module):
             nn.MaxPool2d(kernel_size=2, stride=2)
         )
         
-        # Text branch
-        self.text_embedding = nn.Embedding(text_input_size, 128)
-        self.text_rnn = nn.GRU(128, 64, bidirectional=True, batch_first=True)
-        
         # Fusion layer
-        self.fusion_layer = nn.Linear(128, num_classes)
+        self.fusion_layer = nn.Linear(128 * 56 * 56, num_classes)
         
-    def forward(self, image_input, text_input):
+    def forward(self, image_input):
         # Image branch
         image_features = self.image_conv(image_input)
         image_features = image_features.view(image_features.size(0), -1)
         
-        # Text branch
-        text_embedded = self.text_embedding(text_input)
-        text_output, _ = self.text_rnn(text_embedded)
-        text_features = torch.mean(text_output, dim=1)  
-        
         # Fusion
-        fused_features = torch.cat((image_features, text_features), dim=1)
-        output = self.fusion_layer(fused_features)
+        output = self.fusion_layer(image_features)
         
         return output
 
 if __name__ == "__main__":
     # Configuration
     image_input_channels = 3
-    text_input_size = 1000
     num_classes = 15
     model_path = "parallel_crnn_model.pth"
     learning_rate = 0.001
@@ -68,7 +57,7 @@ if __name__ == "__main__":
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     # Model initialization
-    model = ParallelCRNN(image_input_channels, text_input_size, num_classes)
+    model = ParallelCRNN(image_input_channels, num_classes)
 
     # Loss function and optimizer
     criterion = nn.CrossEntropyLoss()
@@ -78,9 +67,9 @@ if __name__ == "__main__":
     for epoch in range(num_epochs):
         model.train()
         running_loss = 0.0
-        for images, texts, labels in train_loader:
+        for images, labels in train_loader:
             optimizer.zero_grad()
-            outputs = model(images, texts)
+            outputs = model(images)
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
