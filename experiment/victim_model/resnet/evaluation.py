@@ -1,14 +1,17 @@
 """
 This scripts contains the evaluation for mdels
 """
+import os
+
 import torch
 import torch.nn as nn
 from torchvision import transforms, models
 
+from config import Configuration
 from dataset.dataset import ChestXrayDataset
 
 
-MODEL_PATH = "./chest_xray_resnet18.pth"
+MODEL_PATH = os.path.join(Configuration.VICTIM_MODEL_PATH, "resnet", "chest_xray_resnet18.pth")
 
 # Load the dataset
 transform = transforms.Compose([

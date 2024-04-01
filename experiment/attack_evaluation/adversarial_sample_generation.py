@@ -1,3 +1,5 @@
+import os
+
 from torchvision import transforms, models
 import torch
 import torch.nn as nn
@@ -5,9 +7,11 @@ import torch.nn as nn
 from attack.mtitfgsm import MtItfgsm
 from dataset.dataset import ChestXrayDataset
 
-MODEL_PATH = "../victim_model/resnet/chest_xray_resnet18.pth"
+from config import Configuration
+
+MODEL_PATH = os.path.join(Configuration.VICTIM_MODEL_PATH, "resnet", "chest_xray_resnet18.pth")
 SAVE_IMAGE = True
-SAVE_IMAGE_PATH = "./images/"
+SAVE_IMAGE_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), "images")
 NUM_SAMPLES = 1
 MULTI_CLASSIFICATION_THRESHOLD = 0.5
 STEALTHY_ATTACK_PERCENTAGE = 0.2
@@ -26,7 +30,7 @@ if __name__ == "__main__":
     print("Loaded dataset: ChestXrayDataset")
 
     state_dict = torch.load(MODEL_PATH)
-    model = models.resnet18(pretrained=False)
+    model = models.resnet18(pretrained=False, map_location=torch.device('cpu'))
     num_features = model.fc.in_features
     model.fc = nn.Linear(num_features, dataset.get_num_classes())
     model.load_state_dict(state_dict)
@@ -41,9 +45,9 @@ if __name__ == "__main__":
         image_stealthy_untargeted = attack.stealthy_untargeted_attack(image, label, percentage=STEALTHY_ATTACK_PERCENTAGE, epsilon=EPSILON, iters=ITERS)
 
         if SAVE_IMAGE:
-            transforms.ToPILImage()(image.squeeze(0)).save(SAVE_IMAGE_PATH + "original_image_" + str(i) + ".png")
-            transforms.ToPILImage()(image_untargeted.squeeze(0)).save(SAVE_IMAGE_PATH + "untargeted_image_" + str(i) + ".png")
-            transforms.ToPILImage()(image_stealthy_untargeted.squeeze(0)).save(SAVE_IMAGE_PATH + "stealthy_untargeted_image_" + str(i) + ".png")
+            transforms.ToPILImage()(image.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "original_image_" + str(i) + ".png"))
+            transforms.ToPILImage()(image_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH + "untargeted_image_" + str(i) + ".png"))
+            transforms.ToPILImage()(image_stealthy_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH + "stealthy_untargeted_image_" + str(i) + ".png"))
 
         # evaluate the attack results
         model.eval()
