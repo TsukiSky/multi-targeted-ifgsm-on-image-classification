@@ -29,15 +29,17 @@ model.load_state_dict(state_dict)
 model.eval()
 correct = 0
 total = 0
+threshold = 0.5
+
 with torch.no_grad():
     for i in range(len(dataset)):
         image, label = dataset[i]
         image = image.unsqueeze(0)
         outputs = model(image)
-        _, predicted = torch.max(outputs.data, 1)
-        total += 1
-        if label[predicted] == 1:
+        probabilities = torch.sigmoid(outputs)
+        predicted = (probabilities > threshold).int()
+        if torch.equal(predicted, label):
             correct += 1
-
+        total += 1
 
 print(f"Accuracy of the model on the {total} test images: {100 * correct / total}%")

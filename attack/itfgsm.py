@@ -1,42 +1,43 @@
-from attack.attack import Attack
+from attack import Attack
 
 import torch
-import torch.nn.functional as F
+import torch.nn as nn
 
 
 class Itfgsm(Attack):
     """
     ITFGSM: Iterative Targeted Fast Gradient Sign Method
     """
-
-    def __init__(self, model, epsilon=0.01, iters=40, target=False):
+    def __init__(self, model):
         super(Itfgsm, self).__init__("ITFGSM", model)
-        self.epsilon = epsilon
-        self.iters = iters
-        self.target = target
+        self.model.eval()
 
-    def target_attack(self, image, ori_label, target_label):
-        image = image.clone().detach().requires_grad_(True)
-        for i in range(self.iters):
-            output = self.model(image)
-            loss = F.cross_entropy(output, target_label)
-            self.model.zero_grad()
+    def target_attack(self, image, target_label, epsilon=0.01, iters=10):
+        # check if the image is batched
+        if len(image.shape) == 3:
+            image = image.unsqueeze(0)
+
+        for i in range(iters):
+            image = image.clone().detach().requires_grad_(True)
+            output = self.model(image)[0]
+            loss = nn.BCEWithLogitsLoss()(output, target_label)
             loss.backward()
             image_grad = image.grad.data
-            image = image + self.epsilon * image_grad.sign()
+            image = image - epsilon * image_grad.sign()
             image = torch.clamp(image, 0, 1)
-            image = image.detach().clone().requires_grad_(True)
         return image
 
-    def untargeted_attack(self, image, ori_label):
-        image = image.clone().detach().requires_grad_(True)
-        for i in range(self.iters):
-            output = self.model(image)
-            loss = F.cross_entropy(output, ori_label)
-            self.model.zero_grad()
+    def untargeted_attack(self, image, ori_label, epsilon=0.01, iters=10):
+        # check if the image is batched
+        if len(image.shape) == 3:
+            image = image.unsqueeze(0)
+
+        for i in range(iters):
+            image = image.clone().detach().requires_grad_(True)
+            output = self.model(image)[0]
+            loss = nn.BCEWithLogitsLoss()(output, ori_label)
             loss.backward()
             image_grad = image.grad.data
-            image = image - self.epsilon * image_grad.sign()
+            image = image + epsilon * image_grad.sign()
             image = torch.clamp(image, 0, 1)
-            image = image.detach().clone().requires_grad_(True)
         return image
