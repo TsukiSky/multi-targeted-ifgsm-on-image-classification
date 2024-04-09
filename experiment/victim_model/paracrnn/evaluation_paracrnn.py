@@ -1,9 +1,8 @@
 import os
 import torch
-import torch.nn as nn
 from torchvision import transforms
 from dataset.dataset import ChestXrayDataset
-from model.paracrnn import ParallelCRNN
+from paracrnn import ParallelCRNN
 from config import Configuration
 from sklearn.metrics import precision_score, f1_score
 

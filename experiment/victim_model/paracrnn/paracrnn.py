@@ -2,14 +2,14 @@ import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision import transforms
-import torchvision.models as models
 
 from dataset.dataset import ChestXrayDataset
+
 
 class ParallelCRNN(nn.Module):
     def __init__(self, image_input_channels, num_classes):
         super(ParallelCRNN, self).__init__()
-        
+
         # Image branch
         self.image_conv = nn.Sequential(
             nn.Conv2d(image_input_channels, 64, kernel_size=3, padding=1),
@@ -19,19 +19,20 @@ class ParallelCRNN(nn.Module):
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2)
         )
-        
+
         # Fusion layer
         self.fusion_layer = nn.Linear(128 * 56 * 56, num_classes)
-        
+
     def forward(self, image_input):
         # Image branch
         image_features = self.image_conv(image_input)
         image_features = image_features.view(image_features.size(0), -1)
-        
+
         # Fusion
         output = self.fusion_layer(image_features)
-        
+
         return output
+
 
 if __name__ == "__main__":
     # Configuration
