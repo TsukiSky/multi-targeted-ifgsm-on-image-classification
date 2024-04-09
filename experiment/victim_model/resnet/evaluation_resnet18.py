@@ -1,5 +1,5 @@
 """
-This scripts contains the evaluation for mdels
+This scripts contains the evaluation for models
 """
 import os
 

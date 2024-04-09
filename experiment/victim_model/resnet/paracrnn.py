@@ -74,8 +74,9 @@ if __name__ == "__main__":
             loss.backward()
             optimizer.step()
             running_loss += loss.item()
-
+        model.eval()
         print(f"Epoch {epoch + 1}/{num_epochs}, Loss: {running_loss / len(train_loader)}")
 
     # Save the trained model
+    model_path = "chest_xray_paracrnn_model.pth"
     torch.save(model.state_dict(), model_path)
