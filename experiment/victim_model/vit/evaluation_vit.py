@@ -18,8 +18,6 @@ TRANSFORMER_HEADS_NUM = 4
 TRANSFORMER_LAYERS_NUM = 4
 
 
-
-
 # Load the dataset
 transform = transforms.Compose([
     transforms.Resize((224, 224)),  # 224x224 is the input size

@@ -9,7 +9,7 @@ from dataset.dataset import ChestXrayDataset
 
 from config import Configuration
 
-MODEL_PATH = os.path.join(Configuration.VICTIM_MODEL_PATH, "resnet", "chest_xray_resnet18.pth")
+MODEL_PATH = os.path.join(Configuration.VICTIM_MODEL_PATH, "resnet", "chest_xray_resnet.pth")
 SAVE_IMAGE = True
 SAVE_IMAGE_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), "images")
 NUM_SAMPLES = 1
@@ -45,9 +45,9 @@ if __name__ == "__main__":
         image_stealthy_untargeted = attack.stealthy_untargeted_attack(image, label, percentage=STEALTHY_ATTACK_PERCENTAGE, epsilon=EPSILON, iters=ITERS)
 
         if SAVE_IMAGE:
-            transforms.ToPILImage()(image.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "original_image_" + str(i) + ".png"))
-            transforms.ToPILImage()(image_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH + "untargeted_image_" + str(i) + ".png"))
-            transforms.ToPILImage()(image_stealthy_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH + "stealthy_untargeted_image_" + str(i) + ".png"))
+            transforms.ToPILImage()(image.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "resnet_original_" + str(i) + ".png"))
+            transforms.ToPILImage()(image_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "resnet_itfgsm_" + str(i) + ".png"))
+            transforms.ToPILImage()(image_stealthy_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "resnet_mt_itfgsm_" + str(i) + ".png"))
 
         # evaluate the attack results
         model.eval()
@@ -62,7 +62,6 @@ if __name__ == "__main__":
         output_untargeted = (torch.sigmoid(output_untargeted) > MULTI_CLASSIFICATION_THRESHOLD).float()
         output_stealthy_untargeted = (torch.sigmoid(output_stealthy_untargeted) > MULTI_CLASSIFICATION_THRESHOLD).float()
         print("#### Sample:", i, "####")
-        # output the index of the predicted class (index that not equal to 0)
         print("Original Image Prediction:", torch.nonzero(output, as_tuple=True)[1].tolist())
-        print("Untargeted Attack Image Prediction:", torch.nonzero(output_untargeted, as_tuple=True)[1].tolist())
-        print("Stealthy Untargeted Attack Image Prediction:", torch.nonzero(output_stealthy_untargeted, as_tuple=True)[1].tolist())
+        print("ITFGSM Attack Image Prediction:", torch.nonzero(output_untargeted, as_tuple=True)[1].tolist())
+        print("MT-ITFGSM Attack Image Prediction:", torch.nonzero(output_stealthy_untargeted, as_tuple=True)[1].tolist())

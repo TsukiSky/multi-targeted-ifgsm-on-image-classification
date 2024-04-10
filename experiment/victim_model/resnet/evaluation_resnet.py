@@ -11,7 +11,7 @@ from config import Configuration
 from dataset.dataset import ChestXrayDataset
 
 
-MODEL_PATH = os.path.join(Configuration.VICTIM_MODEL_PATH, "resnet", "chest_xray_resnet18.pth")
+MODEL_PATH = os.path.join(Configuration.VICTIM_MODEL_PATH, "resnet", "chest_xray_resnet.pth")
 
 # Load the dataset
 transform = transforms.Compose([

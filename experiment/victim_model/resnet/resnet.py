@@ -6,6 +6,7 @@ import torch
 
 from dataset.dataset import ChestXrayDataset
 
+
 cuda_available = torch.cuda.is_available()
 device = torch.device("cuda" if cuda_available else "cpu")
 print(f"Using device: {device}")
@@ -52,6 +53,6 @@ for epoch in range(num_epochs):
     model.eval()
 
 # Step 4. Save the model
-model_path = "chest_xray_resnet18.pth"
+model_path = "chest_xray_resnet.pth"
 
 torch.save(model.state_dict(), model_path)

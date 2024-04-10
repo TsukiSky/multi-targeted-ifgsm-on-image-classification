@@ -2,11 +2,11 @@ import os
 import torch
 from torchvision import transforms
 from dataset.dataset import ChestXrayDataset
-from paracrnn import ParallelCRNN
+from cnn import TwoLayerCNN
 from config import Configuration
 from sklearn.metrics import precision_score, f1_score
 
-MODEL_PATH = os.path.join(Configuration.VICTIM_MODEL_PATH, "paracrnn", "chest_xray_paracrnn_model.pth")
+MODEL_PATH = os.path.join(Configuration.VICTIM_MODEL_PATH, "cnn", "chest_xray_cnn.pth")
 
 # Load the dataset
 transform = transforms.Compose([
@@ -17,7 +17,7 @@ transform = transforms.Compose([
 dataset = ChestXrayDataset(transform=transform)
 
 # Load the model
-model = ParallelCRNN(image_input_channels=3, num_classes=dataset.get_num_classes())
+model = TwoLayerCNN(image_input_channels=3, num_classes=dataset.get_num_classes())
 model.load_state_dict(torch.load(MODEL_PATH))
 model.eval()
 

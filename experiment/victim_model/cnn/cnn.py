@@ -6,9 +6,9 @@ from torchvision import transforms
 from dataset.dataset import ChestXrayDataset
 
 
-class ParallelCRNN(nn.Module):
+class TwoLayerCNN(nn.Module):
     def __init__(self, image_input_channels, num_classes):
-        super(ParallelCRNN, self).__init__()
+        super(TwoLayerCNN, self).__init__()
 
         # Image branch
         self.image_conv = nn.Sequential(
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     # Configuration
     image_input_channels = 3
     num_classes = 15
-    model_path = "parallel_crnn_model.pth"
+    model_path = "chest_xray_cnn.pth"
     learning_rate = 0.001
     batch_size = 32
     num_epochs = 10
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
     # Model initialization
-    model = ParallelCRNN(image_input_channels, num_classes)
+    model = TwoLayerCNN(image_input_channels, num_classes)
 
     # Loss function and optimizer
     criterion = nn.BCEWithLogitsLoss()
@@ -79,5 +79,4 @@ if __name__ == "__main__":
         print(f"Epoch {epoch + 1}/{num_epochs}, Loss: {running_loss / len(train_loader)}")
 
     # Save the trained model
-    model_path = "chest_xray_paracrnn_model.pth"
     torch.save(model.state_dict(), model_path)
