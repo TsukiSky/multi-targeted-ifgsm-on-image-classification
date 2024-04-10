@@ -30,7 +30,7 @@ if __name__ == "__main__":
     print("Loaded dataset: ChestXrayDataset")
 
     state_dict = torch.load(MODEL_PATH)
-    model = models.resnet18(pretrained=False, map_location=torch.device('cpu'))
+    model = models.resnet18(pretrained=False)
     num_features = model.fc.in_features
     model.fc = nn.Linear(num_features, dataset.get_num_classes())
     model.load_state_dict(state_dict)

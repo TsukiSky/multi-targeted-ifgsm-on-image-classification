@@ -10,16 +10,16 @@ from dataset.dataset import ChestXrayDataset
 
 class PositionalEmbedding(nn.Module):
     def __init__(self, dimension=768, max_length=1000):
-        super().__init__(PositionalEmbedding, self).__init__()
-        self.positional_embedding = torch.zeros(max_length, dimension)
+        super().__init__()
+        positional_embedding = torch.zeros(max_length, dimension)
 
         positions = torch.arange(0, max_length, dtype=torch.float).unsqueeze(1)
         div_term = torch.exp(torch.arange(0, dimension, 2).float() * (-math.log(10000.0) / dimension))
 
-        self.positional_embedding[:, 0::2] = torch.sin(positions * div_term)
-        self.positional_embedding[:, 1::2] = torch.cos(positions * div_term)
+        positional_embedding[:, 0::2] = torch.sin(positions * div_term)
+        positional_embedding[:, 1::2] = torch.cos(positions * div_term)
 
-        positional_embedding = self.positional_embedding.unsqueeze(0)
+        positional_embedding = positional_embedding.unsqueeze(0)
 
         self.register_buffer("positional_embedding", positional_embedding)
 
@@ -42,8 +42,11 @@ class PatchEmbedding(nn.Module):
 
     def forward(self, x):
         x = self.projection(x)
-        b, _, _, _ = x.shape
+        b = x.shape[0]  # b is the batch num
         cls_tokens = self.cls_token.expand(b, -1, -1)
+        # print(x.shape)
+        # print(cls_tokens.shape)
+        x = x.permute(0, 2, 1)
         x = torch.cat((cls_tokens, x), dim=1)
         x = self.positions(x)
         return x

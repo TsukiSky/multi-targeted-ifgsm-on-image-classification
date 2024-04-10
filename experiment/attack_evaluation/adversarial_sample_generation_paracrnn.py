@@ -1,11 +1,10 @@
 import os
 
 import torch
-import torch.nn as nn
 from torchvision import transforms
 from attack.mtitfgsm import MtItfgsm
 from dataset.dataset import ChestXrayDataset
-from model.paracrnn import ParallelCRNN
+from experiment.victim_model.paracrnn.paracrnn import ParallelCRNN
 from config import Configuration
 
 MODEL_PATH = os.path.join(Configuration.VICTIM_MODEL_PATH, "paracrnn", "chest_xray_paracrnn_model.pth")
@@ -42,9 +41,9 @@ if __name__ == "__main__":
         image_stealthy_untargeted = attack.stealthy_untargeted_attack(image, label, percentage=STEALTHY_ATTACK_PERCENTAGE, epsilon=EPSILON, iters=ITERS)
 
         if SAVE_IMAGE:
-            transforms.ToPILImage()(image.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "original_image_" + str(i) + ".png"))
-            transforms.ToPILImage()(image_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "untargeted_image_" + str(i) + ".png"))
-            transforms.ToPILImage()(image_stealthy_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "stealthy_untargeted_image_" + str(i) + ".png"))
+            transforms.ToPILImage()(image.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "original_image_paracrnn_" + str(i) + ".png"))
+            transforms.ToPILImage()(image_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "untargeted_image_paracrnn_" + str(i) + ".png"))
+            transforms.ToPILImage()(image_stealthy_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "stealthy_untargeted_image_paracrnn_" + str(i) + ".png"))
 
         # Evaluate the attack results
         model.eval()
