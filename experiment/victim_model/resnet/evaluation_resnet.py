@@ -1,15 +1,10 @@
-"""
-This scripts contains the evaluation for models
-"""
 import os
-
 import torch
 import torch.nn as nn
 from torchvision import transforms, models
-
-from config import Configuration
 from dataset.dataset import ChestXrayDataset
-
+from config import Configuration
+from sklearn.metrics import precision_score, f1_score
 
 MODEL_PATH = os.path.join(Configuration.VICTIM_MODEL_PATH, "resnet", "chest_xray_resnet.pth")
 
@@ -28,10 +23,10 @@ model.fc = nn.Linear(num_features, dataset.get_num_classes())
 
 state_dict = torch.load(MODEL_PATH)
 model.load_state_dict(state_dict)
-
 model.eval()
-correct = 0
-total = 0
+
+predictions = []
+labels = []
 threshold = 0.5
 
 with torch.no_grad():
@@ -41,8 +36,16 @@ with torch.no_grad():
         outputs = model(image)
         probabilities = torch.sigmoid(outputs)
         predicted = (probabilities > threshold).int()
-        if torch.equal(predicted, label):
-            correct += 1
-        total += 1
+        predictions.append(predicted)
+        labels.append(label)
 
-print(f"Accuracy of the model on the {total} test images: {100 * correct / total}%")
+predictions = torch.cat(predictions)
+labels = torch.stack(labels)
+
+accuracy = (predictions == labels).float().mean().item()
+precision = precision_score(labels.cpu(), predictions.cpu(), average='macro')
+f1 = f1_score(labels.cpu(), predictions.cpu(), average='macro')
+
+print(f"Accuracy: {accuracy * 100:.2f}%")
+print(f"Precision: {precision:.4f}")
+print(f"F1 Score: {f1:.4f}")
