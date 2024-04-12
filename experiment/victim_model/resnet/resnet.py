@@ -7,6 +7,7 @@ import torch
 from dataset.dataset import ChestXrayDataset
 
 
+torch.manual_seed(100)
 cuda_available = torch.cuda.is_available()
 device = torch.device("cuda" if cuda_available else "cpu")
 print(f"Using device: {device}")

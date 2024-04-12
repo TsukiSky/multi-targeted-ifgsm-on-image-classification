@@ -3,6 +3,7 @@ import os
 from PIL import Image
 import imagehash
 import numpy as np
+from skimage.metrics import structural_similarity as ssim
 
 ORIGINAL_IMAGE_PATH =os.path.join(os.path.abspath(os.path.dirname(__file__)), "images", "original_image_vit_0.png")
 ADVERSARIAL_IMAGE_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), "images", "untargeted_image_vit_0.png")
@@ -30,15 +31,21 @@ if __name__ == "__main__":
     adversarial_image = np.array(adversarial_image)
     stealthy_adversarial_image = np.array(stealthy_adversarial_image)
 
-    l0_distance_adversarial = np.count_nonzero(original_image - adversarial_image)
-    l0_distance_stealthy_adversarial = np.count_nonzero(original_image - stealthy_adversarial_image)
+    # l0_distance_adversarial = np.count_nonzero(original_image - adversarial_image)
+    # l0_distance_stealthy_adversarial = np.count_nonzero(original_image - stealthy_adversarial_image)
 
     l2_distance_adversarial = np.linalg.norm(original_image - adversarial_image).round(2)
     l2_distance_stealthy_adversarial = np.linalg.norm(original_image - stealthy_adversarial_image).round(2)
 
-    print("############################# L0 Distance #############################")
-    print("L0 Distance between Original and Adversarial Image:", l0_distance_adversarial)
-    print("L0 Distance between Original and Stealthy Adversarial Image:", l0_distance_stealthy_adversarial)
+    ssim_adversarial = ssim(original_image, adversarial_image, multichannel=True)
+    ssim_stealthy_adversarial = ssim(original_image, stealthy_adversarial_image, multichannel=True)
+
+    # print("############################# L0 Distance #############################")
+    # print("L0 Distance between Original and Adversarial Image:", l0_distance_adversarial)
+    # print("L0 Distance between Original and Stealthy Adversarial Image:", l0_distance_stealthy_adversarial)
     print("############################# L2 Distance #############################")
     print("L2 Distance between Original and Adversarial Image:", l2_distance_adversarial)
     print("L2 Distance between Original and Stealthy Adversarial Image:", l2_distance_stealthy_adversarial)
+    print("############################# SSIM #############################")
+    print("SSIM between Original and Adversarial Image:", ssim_adversarial)
+    print("SSIM between Original and Stealthy Adversarial Image:", ssim_stealthy_adversarial)

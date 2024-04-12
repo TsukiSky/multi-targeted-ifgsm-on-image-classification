@@ -35,6 +35,7 @@ class TwoLayerCNN(nn.Module):
 
 
 if __name__ == "__main__":
+    torch.manual_seed(100)
     # Configuration
     image_input_channels = 3
     num_classes = 15

@@ -84,6 +84,7 @@ TRANSFORMER_HEADS_NUM = 4
 TRANSFORMER_LAYERS_NUM = 4
 
 if __name__ == "__main__":
+    torch.manual_seed(100)
     cuda_available = torch.cuda.is_available()
     device = torch.device("cuda" if cuda_available else "cpu")
     print(f"Using device: {device}")
