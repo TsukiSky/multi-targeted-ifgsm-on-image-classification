@@ -3,6 +3,7 @@
 
 # environment
 ./venv
+venv
 
 # cache
 ./cache
@@ -10,3 +11,10 @@
 # dataset
 ./dataset/images
 ./dataset/data_entry_2017.csv
+dataset/images
+dataset/data_entry_2017.csv
+
+# pycache
+*.pyc
+
+*.DS_Store
