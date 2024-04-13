@@ -43,7 +43,7 @@ class Evaluator:
 
         itfgsm_image = itfgsm_image.squeeze(0)
         mt_itfgsm_image = mt_itfgsm_image.squeeze(0)
-        original_image_last = itfgsm_image.transpose(1, 2, 0)
+        original_image_last = original_image.transpose(1, 2, 0)
         itfgsm_image_last = itfgsm_image.transpose(1, 2, 0)
         mt_itfgsm_image_last = mt_itfgsm_image.transpose(1, 2, 0)
 

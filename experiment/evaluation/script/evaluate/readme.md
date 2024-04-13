@@ -1,4 +1,4 @@
-## Stateliness Evaluation Results
+## Stealthiness Evaluation Results
 **CNN Average Metrics:**
 ITFGSM Hash Distance: 0.334
 MT-ITFGSM Hash Distance: 0.286

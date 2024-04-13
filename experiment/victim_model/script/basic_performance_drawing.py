@@ -9,12 +9,12 @@ cnn_performance = {"accuracy": 0.3802, "hamming_loss": 0.0771}
 models = ["2-layer CNN", "ResNet18", "ViT"]
 accuracy = [cnn_performance["accuracy"], resnet_performance["accuracy"], vit_performance["accuracy"]]
 hamming_loss = [cnn_performance["hamming_loss"], resnet_performance["hamming_loss"], vit_performance["hamming_loss"]]
-patterns = ['--', '\\\\', '++']
+patterns = ['//', '\\\\', '+']
 colors = ['#2878b5', '#54B345', '#FA7F6F']
 
 
 plt.figure(figsize=(6, 4))
-bars = plt.bar(models, accuracy, color=colors, hatch=patterns)
+bars = plt.bar(models, accuracy, color=colors, hatch=patterns, edgecolor='black')
 plt.title('Models Accuracy')
 plt.ylim(0, 0.7)
 plt.ylabel('Accuracy')
@@ -26,7 +26,7 @@ for bar, pattern in zip(bars, patterns):
 plt.show()
 
 plt.figure(figsize=(6, 4))
-bars = plt.bar(models, hamming_loss, color=colors, hatch=patterns)
+bars = plt.bar(models, hamming_loss, color=colors, hatch=patterns, edgecolor='black')
 plt.title('Models Hamming Loss')
 plt.ylim(0, 0.1)
 plt.ylabel('Hamming Loss')
