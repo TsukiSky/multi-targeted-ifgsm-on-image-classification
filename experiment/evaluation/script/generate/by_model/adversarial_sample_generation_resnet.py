@@ -1,13 +1,15 @@
 import os
 
+from torchvision import transforms, models
 import torch
-from torchvision import transforms
+import torch.nn as nn
+
 from attack.mtitfgsm import MtItfgsm
 from dataset.dataset import ChestXrayDataset
-from experiment.victim_model.cnn.cnn import TwoLayerCNN as CNN
+
 from config import Configuration
 
-MODEL_PATH = os.path.join(Configuration.VICTIM_MODEL_PATH, "cnn", "chest_xray_cnn.pth")
+MODEL_PATH = os.path.join(Configuration.VICTIM_MODEL_PATH, "resnet", "chest_xray_resnet.pth")
 SAVE_IMAGE = True
 SAVE_IMAGE_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), "images")
 NUM_SAMPLES = 1
@@ -16,36 +18,38 @@ STEALTHY_ATTACK_PERCENTAGE = 0.2
 EPSILON = 0.001
 ITERS = 4
 
+
 if __name__ == "__main__":
     # Load the dataset
     transform = transforms.Compose([
-        transforms.Resize((224, 224)),  # 224x224 is the input size
+        transforms.Resize((224, 224)),  # 224x224 is the input size for ResNet
         transforms.ToTensor(),  # convert images to PyTorch tensors
     ])
 
     dataset = ChestXrayDataset(transform=transform)
     print("Loaded dataset: ChestXrayDataset")
 
-    # Load the ParallelCRNN model
-    model = CNN(image_input_channels=3, num_classes=dataset.get_num_classes())
-    model.load_state_dict(torch.load(MODEL_PATH))
+    state_dict = torch.load(MODEL_PATH)
+    model = models.resnet18(pretrained=False)
+    num_features = model.fc.in_features
+    model.fc = nn.Linear(num_features, dataset.get_num_classes())
+    model.load_state_dict(state_dict)
     model.eval()
-    print("Loaded model:", MODEL_PATH)
+    print("Loaded model: " + MODEL_PATH)
 
-    # Initialize the attack
     attack = MtItfgsm(model)
 
     for i in range(NUM_SAMPLES):
         image, label = dataset[i]
         image_untargeted = attack.untargeted_attack(image, label, epsilon=EPSILON, iters=ITERS)
-        image_stealthy_untargeted = attack.stealthy_untargeted_attack(image, label, percentage=STEALTHY_ATTACK_PERCENTAGE, epsilon=EPSILON, iters=ITERS)
+        image_stealthy_untargeted = attack.mt_itfgsm_attack(image, label, percentage=STEALTHY_ATTACK_PERCENTAGE, epsilon=EPSILON, iters=ITERS)
 
         if SAVE_IMAGE:
-            transforms.ToPILImage()(image.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "cnn_original_" + str(i) + ".png"))
-            transforms.ToPILImage()(image_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "cnn_itfgsm_" + str(i) + ".png"))
-            transforms.ToPILImage()(image_stealthy_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "cnn_mt_itfgsm_" + str(i) + ".png"))
+            transforms.ToPILImage()(image.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "resnet_original_" + str(i) + ".png"))
+            transforms.ToPILImage()(image_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "resnet_itfgsm_" + str(i) + ".png"))
+            transforms.ToPILImage()(image_stealthy_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "resnet_mt_itfgsm_" + str(i) + ".png"))
 
-        # Evaluate the attack results
+        # evaluate the attack results
         model.eval()
         if len(image.shape) == 3:
             image = image.unsqueeze(0)

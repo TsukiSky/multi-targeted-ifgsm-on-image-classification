@@ -51,7 +51,7 @@ if __name__ == "__main__":
     for i in range(NUM_SAMPLES):
         image, label = dataset[i]
         image_untargeted = attack.untargeted_attack(image, label, epsilon=EPSILON, iters=ITERS)
-        image_stealthy_untargeted = attack.stealthy_untargeted_attack(image, label, percentage=STEALTHY_ATTACK_PERCENTAGE, epsilon=EPSILON, iters=ITERS)
+        image_stealthy_untargeted = attack.mt_itfgsm_attack(image, label, percentage=STEALTHY_ATTACK_PERCENTAGE, epsilon=EPSILON, iters=ITERS)
 
         if SAVE_IMAGE:
             transforms.ToPILImage()(image.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "vit_original_" + str(i) + ".png"))

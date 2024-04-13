@@ -5,9 +5,11 @@ import imagehash
 import numpy as np
 from skimage.metrics import structural_similarity as ssim
 
-ORIGINAL_IMAGE_PATH =os.path.join(os.path.abspath(os.path.dirname(__file__)), "images", "original_image_vit_0.png")
-ADVERSARIAL_IMAGE_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), "images", "untargeted_image_vit_0.png")
-STEALTHY_ADVERSARIAL_IMAGE_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), "images", "stealthy_untargeted_image_vit_0.png")
+from config import Configuration
+
+ORIGINAL_IMAGE_PATH =os.path.join(Configuration.PERTURBED_IMAGE_PATH, "original_image.png")
+ADVERSARIAL_IMAGE_PATH = os.path.join(Configuration.PERTURBED_IMAGE_PATH, "itfgsm.png")
+STEALTHY_ADVERSARIAL_IMAGE_PATH = os.path.join(Configuration.PERTURBED_IMAGE_PATH, "mt_itfgsm.png")
 
 if __name__ == "__main__":
     original_image = Image.open(ORIGINAL_IMAGE_PATH)
