@@ -83,7 +83,7 @@ cnn_results = np.array(cnn_results)
 resnet_results = np.array(resnet_results)
 vit_results = np.array(vit_results)
 
-np.savetxt("cnn_results.csv", cnn_results, delimiter=",",
+np.savetxt("cnn_stealthy_results.csv", cnn_results, delimiter=",",
            header="ITFGSM Hash Distance, "
                   "MT-ITFGSM Hash Distance, "
                   "L2 Distance ITFGSM, "
@@ -91,7 +91,7 @@ np.savetxt("cnn_results.csv", cnn_results, delimiter=",",
                   "SSIM ITFGSM,"
                   "SSIM MT-ITFGSM",
            comments='')
-np.savetxt("resnet_results.csv", resnet_results, delimiter=",",
+np.savetxt("resnet_stealthy_results.csv", resnet_results, delimiter=",",
            header="ITFGSM Hash Distance, "
                   "MT-ITFGSM Hash Distance, "
                   "L2 Distance ITFGSM, "
@@ -99,7 +99,7 @@ np.savetxt("resnet_results.csv", resnet_results, delimiter=",",
                   "SSIM ITFGSM, "
                   "SSIM MT-ITFGSM",
            comments='')
-np.savetxt("vit_results.csv", vit_results, delimiter=",",
+np.savetxt("vit_stealthy_results.csv", vit_results, delimiter=",",
            header="ITFGSM Hash Distance, "
                   "MT-ITFGSM Hash Distance, "
                   "L2 Distance ITFGSM, "

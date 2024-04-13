@@ -72,20 +72,24 @@ for i in range(TEST_SAMPLES):
         cnn_itfgsm_image, label)
     cnn_mt_itfgsm_per_sample_accuracy, cnn_mt_itfgsm_per_sample_hamming_loss = cnn_evaluator.evaluate_attack_performance(
         cnn_mt_itfgsm_image, label)
-    cnn_results[i] = [cnn_itfgsm_per_sample_accuracy, cnn_itfgsm_per_sample_hamming_loss,
-                      cnn_mt_itfgsm_per_sample_accuracy, cnn_mt_itfgsm_per_sample_hamming_loss]
+    cnn_results[i] = [cnn_itfgsm_per_sample_accuracy.item(), cnn_itfgsm_per_sample_hamming_loss.item(),
+                      cnn_mt_itfgsm_per_sample_accuracy.item(), cnn_mt_itfgsm_per_sample_hamming_loss.item()]
 
     resnet_itfgsm_image, resnet_mt_itfgsm_image = resnet_generator.generate(image, label, ITER, EPSILON, PERCENTAGE)
     resnet_itfgsm_per_sample_accuracy, resnet_itfgsm_per_sample_hamming_loss = resnet_evaluator.evaluate_attack_performance(
         resnet_itfgsm_image, label)
     resnet_mt_itfgsm_per_sample_accuracy, resnet_mt_itfgsm_per_sample_hamming_loss = resnet_evaluator.evaluate_attack_performance(
         resnet_mt_itfgsm_image, label)
+    resnet_results[i] = [resnet_itfgsm_per_sample_accuracy.item(), resnet_itfgsm_per_sample_hamming_loss.item(),
+                            resnet_mt_itfgsm_per_sample_accuracy.item(), resnet_mt_itfgsm_per_sample_hamming_loss.item()]
 
     vit_itfgsm_image, vit_mt_itfgsm_image = vit_generator.generate(image, label, ITER, EPSILON, PERCENTAGE)
     vit_itfgsm_per_sample_accuracy, vit_itfgsm_per_sample_hamming_loss = vit_evaluator.evaluate_attack_performance(
         vit_itfgsm_image, label)
     vit_mt_itfgsm_per_sample_accuracy, vit_mt_itfgsm_per_sample_hamming_loss = vit_evaluator.evaluate_attack_performance(
         vit_mt_itfgsm_image, label)
+    vit_results[i] = [vit_itfgsm_per_sample_accuracy.item(), vit_itfgsm_per_sample_hamming_loss.item(),
+                        vit_mt_itfgsm_per_sample_accuracy.item(), vit_mt_itfgsm_per_sample_hamming_loss.item()]
 
 print("###################################")
 cnn_itfgsm_accuracy = cnn_results[:, 0].mean()
@@ -119,21 +123,25 @@ print("VIT MT-ITFGSM Accuracy:", vit_mt_itfgsm_accuracy)
 print("VIT MT-ITFGSM Hamming Loss:", vit_mt_itfgsm_hamming_loss)
 print("###################################")
 print("Saving Results")
+data = np.array([[
+    cnn_itfgsm_accuracy,
+    cnn_itfgsm_hamming_loss,
+    cnn_mt_itfgsm_accuracy,
+    cnn_mt_itfgsm_hamming_loss,
+    resnet_itfgsm_accuracy,
+    resnet_itfgsm_hamming_loss,
+    resnet_mt_itfgsm_accuracy,
+    resnet_mt_itfgsm_hamming_loss,
+    vit_itfgsm_accuracy,
+    vit_itfgsm_hamming_loss,
+    vit_mt_itfgsm_accuracy,
+    vit_mt_itfgsm_hamming_loss
+]])
+
 np.savetxt("performance_results.csv",
-           np.array([
-               cnn_itfgsm_accuracy,
-               cnn_itfgsm_hamming_loss,
-               cnn_mt_itfgsm_accuracy,
-               cnn_mt_itfgsm_hamming_loss,
-               resnet_itfgsm_accuracy,
-               resnet_itfgsm_hamming_loss,
-               resnet_mt_itfgsm_accuracy,
-               resnet_mt_itfgsm_hamming_loss,
-               vit_itfgsm_accuracy,
-               vit_itfgsm_hamming_loss,
-               vit_mt_itfgsm_accuracy,
-               vit_mt_itfgsm_hamming_loss]),
+           data,
            delimiter=",",
+           fmt='%.4f',
            header="CNN ITFGSM Accuracy, "
                   "CNN ITFGSM Hamming Loss, "
                   "CNN MT-ITFGSM Accuracy, "

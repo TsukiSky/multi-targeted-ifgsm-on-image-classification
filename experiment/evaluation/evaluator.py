@@ -67,7 +67,6 @@ class Evaluator:
         adversarial_output = self.model(adversarial_image)
 
         adversarial_output = (torch.sigmoid(adversarial_output) > multi_classification_threshold).float()
-
         accuracy_per_sample = (adversarial_output == original_label).all(dim=1).float()
-        hamming_loss_per_sample = (adversarial_output != original_label).float()
+        hamming_loss_per_sample = (adversarial_output != original_label).float().mean(dim=1)
         return accuracy_per_sample, hamming_loss_per_sample
