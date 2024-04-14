@@ -2,6 +2,8 @@
 
 A Course Project for SUTD 50.039 Theory and Practice of Deep Learning (2024 Spring)
 
+Check out our [report](doc/project_report.pdf).
+
 ## Team Members
 
 [Xiang Siqi](https://github.com/TsukiSky) 1004875

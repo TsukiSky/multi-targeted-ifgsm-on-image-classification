@@ -5,4 +5,4 @@ We conduct our adversarial attack on several models, including:
 - Three Layer CNN
 - Simple ViT
 
-More information can be found in the readme file of the respective model folders
+More information can be found in the readme file of the respective model folders.
