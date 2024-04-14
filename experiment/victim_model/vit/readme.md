@@ -9,8 +9,6 @@ Our implementation of a simplified Vision Transformer (ViT) model adopts a patch
 The model has been evaluated using standard classification metrics:
 
 - **Accuracy:** 58.96%
-- **Precision:** 0.0393
-- **F1 Score:** 0.0495
 - **Hamming Loss:** 0.0680
 
 These metrics reflect the preliminary results obtained under our current experimental setup.
