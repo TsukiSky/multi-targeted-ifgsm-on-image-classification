@@ -37,7 +37,7 @@ pip install -r requirements.txt
 
 We use a portion of the [NIH Chest X-ray dataset](https://huggingface.co/datasets/alkzar90/NIH-Chest-X-ray-dataset) as our dataset. The dataset contains 25000 images of chest X-rays, with 14 different diseases. You can download the dataset from [here](https://drive.google.com/file/d/1GTWlKciNyAwJCjz8Id9kCnnpuKev4Sxb/view?usp=drive_link).
 
-After downloading the dataset, put the images folder under the dataset package. The directory of the dataset package should be  structured as follows:
+After downloading the dataset, put the images folder under the dataset package. The directory of the dataset package should be  structured as follows:  
 ├─dataset  
 │  ├─images  
 │  ├─script
