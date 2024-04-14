@@ -6,7 +6,7 @@ F1 Score: 0.0930
 Hamming Loss: 0.0771
 
 Three layer: 
-    Accuracy: 48.40%
-    Precision: 0.0654
-    F1 Score: 0.0487
-    Hamming Loss: 0.0652
+Accuracy: 48.40%
+Precision: 0.0654
+F1 Score: 0.0487
+Hamming Loss: 0.0652

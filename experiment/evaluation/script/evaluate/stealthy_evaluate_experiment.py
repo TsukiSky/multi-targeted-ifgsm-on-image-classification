@@ -8,6 +8,7 @@ import torch.nn as nn
 from config import Configuration
 from experiment.victim_model.vit.vit import ViT
 from experiment.victim_model.cnn.cnn import TwoLayerCNN
+from experiment.victim_model.cnn.cnn_three_layer import ThreeLayerCNN
 from experiment.evaluation.evaluator import Evaluator
 from experiment.evaluation.generator import Generator, AttackMethod
 
@@ -42,6 +43,12 @@ cnn_model.eval()
 cnn_generator = Generator(cnn_model, AttackMethod.BOTH)
 print("Loaded CNN model:", Configuration.CNN_MODEL_PATH)
 
+cnn_three_layer_model = ThreeLayerCNN(image_input_channels=3, num_classes=dataset.get_num_classes())
+cnn_three_layer_model.load_state_dict(torch.load(Configuration.CNN_MODEL_PATH))
+cnn_three_layer_model.eval()
+cnn_three_layer_generator = Generator(cnn_three_layer_model, AttackMethod.BOTH)
+print("Loaded CNN model:", Configuration.CNN_THREE_LAYER_MODEL_PATH)
+
 resnet_model = models.resnet18(pretrained=False)
 num_features = resnet_model.fc.in_features
 resnet_model.fc = nn.Linear(num_features, dataset.get_num_classes())
@@ -60,6 +67,7 @@ print("Loaded VIT model:", Configuration.VIT_MODEL_PATH)
 evaluator = Evaluator(None)  # No need for generating methods
 
 cnn_results = []
+cnn_three_layer_results = []
 resnet_results = []
 vit_results = []
 
@@ -67,23 +75,35 @@ for i in range(TEST_SAMPLES):
     image, label = test_dataset[i]
     print("#### Sample:", i, " Evaluating ... ####")
     cnn_itfgsm_image, cnn_mt_itfgsm_image = cnn_generator.generate(image, label, ITER, EPSILON, PERCENTAGE)
+    cnn_three_layer_itfgsm_image, cnn_three_layer_mt_itfgsm_image = cnn_three_layer_generator.generate(image, label, ITER, EPSILON, PERCENTAGE)
     resnet_itfgsm_image, resnet_mt_itfgsm_image = resnet_generator.generate(image, label, ITER, EPSILON, PERCENTAGE)
     vit_itfgsm_image, vit_mt_itfgsm_image = vit_generator.generate(image, label, ITER, EPSILON, PERCENTAGE)
 
     cnn_metrics = evaluator.evaluate_stealthiness(image, cnn_itfgsm_image, cnn_mt_itfgsm_image)
+    cnn_three_layer_metrics = evaluator.evaluate_stealthiness(image, cnn_three_layer_itfgsm_image, cnn_three_layer_mt_itfgsm_image)
     resnet_metrics = evaluator.evaluate_stealthiness(image, resnet_itfgsm_image, resnet_mt_itfgsm_image)
     vit_metrics = evaluator.evaluate_stealthiness(image, vit_itfgsm_image, vit_mt_itfgsm_image)
 
     cnn_results.append(cnn_metrics)
+    cnn_three_layer_results.append(cnn_three_layer_metrics)
     resnet_results.append(resnet_metrics)
     vit_results.append(vit_metrics)
 print("###################################")
 print("Saving Results")
 cnn_results = np.array(cnn_results)
+cnn_three_layer_results = np.array(cnn_three_layer_results)
 resnet_results = np.array(resnet_results)
 vit_results = np.array(vit_results)
 
 np.savetxt("cnn_stealthy_results.csv", cnn_results, delimiter=",",
+           header="ITFGSM Hash Distance, "
+                  "MT-IFGSM Hash Distance, "
+                  "L2 Distance ITFGSM, "
+                  "L2 Distance MT-IFGSM,"
+                  "SSIM ITFGSM,"
+                  "SSIM MT-IFGSM",
+           comments='')
+np.savetxt("cnn_three_layer_stealthy_results.csv", cnn_three_layer_results, delimiter=",",
            header="ITFGSM Hash Distance, "
                   "MT-IFGSM Hash Distance, "
                   "L2 Distance ITFGSM, "
@@ -110,6 +130,7 @@ np.savetxt("vit_stealthy_results.csv", vit_results, delimiter=",",
 
 print("###################################")
 cnn_mean = np.mean(cnn_results, axis=0)
+cnn_three_layer_mean = np.mean(cnn_results, axis=0)
 resnet_mean = np.mean(resnet_results, axis=0)
 vit_mean = np.mean(vit_results, axis=0)
 print("CNN Average Metrics:")
@@ -119,6 +140,15 @@ print("L2 Distance ITFGSM:", cnn_mean[2])
 print("L2 Distance MT-IFGSM:", cnn_mean[3])
 print("SSIM ITFGSM:", cnn_mean[4])
 print("SSIM MT-IFGSM:", cnn_mean[5])
+print("###################################")
+
+print("CNN Three Layer Average Metrics:")
+print("ITFGSM Hash Distance:", cnn_three_layer_mean[0])
+print("MT-IFGSM Hash Distance:", cnn_three_layer_mean[1])
+print("L2 Distance ITFGSM:", cnn_three_layer_mean[2])
+print("L2 Distance MT-IFGSM:", cnn_three_layer_mean[3])
+print("SSIM ITFGSM:", cnn_three_layer_mean[4])
+print("SSIM MT-IFGSM:", cnn_three_layer_mean[5])
 print("###################################")
 
 print("ResNet Average Metrics:")

@@ -10,5 +10,6 @@ class Configuration:
     PERTURBED_IMAGE_PATH = os.path.join(PROJECT_PATH, 'experiment', 'evaluation', 'perturbed_images')
 
     CNN_MODEL_PATH = os.path.join(VICTIM_MODEL_PATH, 'cnn', 'chest_xray_cnn.pth')
+    CNN_THREE_LAYER_MODEL_PATH = os.path.join(VICTIM_MODEL_PATH, 'cnn', 'chest_xray_cnn_three_layer.pth')
     RESNET_MODEL_PATH = os.path.join(VICTIM_MODEL_PATH, 'resnet', 'chest_xray_resnet.pth')
     VIT_MODEL_PATH = os.path.join(VICTIM_MODEL_PATH, 'vit', 'vit.pth')

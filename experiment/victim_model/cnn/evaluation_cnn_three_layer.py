@@ -60,12 +60,7 @@ labels = torch.stack(labels)
 
 accuracy_per_sample = (predictions == labels).all(dim=1).float()
 accuracy = accuracy_per_sample.mean().item()
-precision = precision_score(labels.cpu(), predictions.cpu(), average='macro')
-f1 = f1_score(labels.cpu(), predictions.cpu(), average='macro')
+hamming_loss = (predictions != labels).float().mean().item()
 
 print(f"Accuracy: {accuracy * 100:.2f}%")
-print(f"Precision: {precision:.4f}")
-print(f"F1 Score: {f1:.4f}")
-
-hamming_loss = (predictions != labels).float().mean().item()
 print(f"Hamming Loss: {hamming_loss:.4f}")

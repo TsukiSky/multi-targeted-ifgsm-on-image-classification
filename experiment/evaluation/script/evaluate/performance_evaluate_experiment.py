@@ -8,6 +8,7 @@ import torch.nn as nn
 from config import Configuration
 from experiment.victim_model.vit.vit import ViT
 from experiment.victim_model.cnn.cnn import TwoLayerCNN
+from experiment.victim_model.cnn.cnn_three_layer import ThreeLayerCNN
 from experiment.evaluation.evaluator import Evaluator
 from experiment.evaluation.generator import Generator, AttackMethod
 
@@ -41,6 +42,12 @@ cnn_model.eval()
 cnn_generator = Generator(cnn_model, AttackMethod.BOTH)
 print("Loaded CNN model:", Configuration.CNN_MODEL_PATH)
 
+cnn_three_layer_model = ThreeLayerCNN(image_input_channels=3, num_classes=dataset.get_num_classes())
+cnn_three_layer_model.load_state_dict(torch.load(Configuration.CNN_MODEL_PATH))
+cnn_three_layer_model.eval()
+cnn_three_layer_generator = Generator(cnn_three_layer_model, AttackMethod.BOTH)
+print("Loaded CNN model:", Configuration.CNN_THREE_LAYER_MODEL_PATH)
+
 resnet_model = models.resnet18(pretrained=False)
 num_features = resnet_model.fc.in_features
 resnet_model.fc = nn.Linear(num_features, dataset.get_num_classes())
@@ -57,10 +64,12 @@ vit_generator = Generator(vit_model, AttackMethod.BOTH)
 print("Loaded VIT model:", Configuration.VIT_MODEL_PATH)
 
 cnn_evaluator = Evaluator(cnn_model)  # No need for generating methods
+cnn_three_layer_evaluator = Evaluator(cnn_three_layer_model)
 resnet_evaluator = Evaluator(resnet_model)
 vit_evaluator = Evaluator(vit_model)
 
 cnn_results = np.zeros((TEST_SAMPLES, 4))
+cnn_three_layer_results = np.zeros((TEST_SAMPLES, 4))
 resnet_results = np.zeros((TEST_SAMPLES, 4))
 vit_results = np.zeros((TEST_SAMPLES, 4))
 
@@ -74,6 +83,14 @@ for i in range(TEST_SAMPLES):
         cnn_mt_itfgsm_image, label)
     cnn_results[i] = [cnn_itfgsm_per_sample_accuracy.item(), cnn_itfgsm_per_sample_hamming_loss.item(),
                       cnn_mt_itfgsm_per_sample_accuracy.item(), cnn_mt_itfgsm_per_sample_hamming_loss.item()]
+    
+    cnn_three_layer_itfgsm_image, cnn_three_layer_mt_itfgsm_image = cnn_three_layer_generator.generate(image, label, ITER, EPSILON, PERCENTAGE)
+    cnn_three_layer_itfgsm_per_sample_accuracy, cnn_three_layer_itfgsm_per_sample_hamming_loss = cnn_three_layer_evaluator.evaluate_attack_performance(
+        cnn_three_layer_itfgsm_image, label)
+    cnn_three_layer_mt_itfgsm_per_sample_accuracy, cnn_three_layer_mt_itfgsm_per_sample_hamming_loss = cnn_three_layer_evaluator.evaluate_attack_performance(
+        cnn_three_layer_mt_itfgsm_image, label)
+    cnn_three_layer_results[i] = [cnn_three_layer_itfgsm_per_sample_accuracy.item(), cnn_three_layer_itfgsm_per_sample_hamming_loss.item(),
+                      cnn_three_layer_mt_itfgsm_per_sample_accuracy.item(), cnn_three_layer_mt_itfgsm_per_sample_hamming_loss.item()]
 
     resnet_itfgsm_image, resnet_mt_itfgsm_image = resnet_generator.generate(image, label, ITER, EPSILON, PERCENTAGE)
     resnet_itfgsm_per_sample_accuracy, resnet_itfgsm_per_sample_hamming_loss = resnet_evaluator.evaluate_attack_performance(
@@ -97,6 +114,11 @@ cnn_itfgsm_hamming_loss = cnn_results[:, 1].mean()
 cnn_mt_itfgsm_accuracy = cnn_results[:, 2].mean()
 cnn_mt_itfgsm_hamming_loss = cnn_results[:, 3].mean()
 
+cnn_three_layer_itfgsm_accuracy = cnn_three_layer_results[:, 0].mean()
+cnn_three_layer_itfgsm_hamming_loss = cnn_three_layer_results[:, 1].mean()
+cnn_three_layer_mt_itfgsm_accuracy = cnn_three_layer_results[:, 2].mean()
+cnn_three_layer_mt_itfgsm_hamming_loss = cnn_three_layer_results[:, 3].mean()
+
 resnet_itfgsm_accuracy = resnet_results[:, 0].mean()
 resnet_itfgsm_hamming_loss = resnet_results[:, 1].mean()
 resnet_mt_itfgsm_accuracy = resnet_results[:, 2].mean()
@@ -111,6 +133,11 @@ print("CNN ITFGSM Accuracy:", cnn_itfgsm_accuracy)
 print("CNN ITFGSM Hamming Loss:", cnn_itfgsm_hamming_loss)
 print("CNN MT-IFGSM Accuracy:", cnn_mt_itfgsm_accuracy)
 print("CNN MT-IFGSM Hamming Loss:", cnn_mt_itfgsm_hamming_loss)
+print("-----------------------------------")
+print("CNN THREE LAYER ITFGSM Accuracy:", cnn_three_layer_itfgsm_accuracy)
+print("CNN THREE LAYER ITFGSM Hamming Loss:", cnn_three_layer_itfgsm_hamming_loss)
+print("CNN THREE LAYER MT-IFGSM Accuracy:", cnn_three_layer_mt_itfgsm_accuracy)
+print("CNN THREE LAYER MT-IFGSM Hamming Loss:", cnn_three_layer_mt_itfgsm_hamming_loss)
 print("-----------------------------------")
 print("RESNET ITFGSM Accuracy:", resnet_itfgsm_accuracy)
 print("RESNET ITFGSM Hamming Loss:", resnet_itfgsm_hamming_loss)
@@ -128,6 +155,10 @@ data = np.array([[
     cnn_itfgsm_hamming_loss,
     cnn_mt_itfgsm_accuracy,
     cnn_mt_itfgsm_hamming_loss,
+    cnn_three_layer_itfgsm_accuracy,
+    cnn_three_layer_itfgsm_hamming_loss,
+    cnn_three_layer_mt_itfgsm_accuracy,
+    cnn_three_layer_mt_itfgsm_hamming_loss,
     resnet_itfgsm_accuracy,
     resnet_itfgsm_hamming_loss,
     resnet_mt_itfgsm_accuracy,
@@ -146,6 +177,10 @@ np.savetxt("performance_results.csv",
                   "CNN ITFGSM Hamming Loss, "
                   "CNN MT-IFGSM Accuracy, "
                   "CNN MT-IFGSM Hamming Loss, "
+                  "CNN THREE LAYER ITFGSM Accuracy, "
+                  "CNN THREE LAYER ITFGSM Hamming Loss, "
+                  "CNN THREE LAYER MT-IFGSM Accuracy, "
+                  "CNN THREE LAYER MT-IFGSM Hamming Loss, "
                   "RESNET ITFGSM Accuracy, "
                   "RESNET ITFGSM Hamming Loss, "
                   "RESNET MT-IFGSM Accuracy, "
