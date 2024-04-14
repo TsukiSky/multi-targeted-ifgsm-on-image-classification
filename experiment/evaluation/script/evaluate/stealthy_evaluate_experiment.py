@@ -85,27 +85,27 @@ vit_results = np.array(vit_results)
 
 np.savetxt("cnn_stealthy_results.csv", cnn_results, delimiter=",",
            header="ITFGSM Hash Distance, "
-                  "MT-ITFGSM Hash Distance, "
+                  "MT-IFGSM Hash Distance, "
                   "L2 Distance ITFGSM, "
-                  "L2 Distance MT-ITFGSM,"
+                  "L2 Distance MT-IFGSM,"
                   "SSIM ITFGSM,"
-                  "SSIM MT-ITFGSM",
+                  "SSIM MT-IFGSM",
            comments='')
 np.savetxt("resnet_stealthy_results.csv", resnet_results, delimiter=",",
            header="ITFGSM Hash Distance, "
-                  "MT-ITFGSM Hash Distance, "
+                  "MT-IFGSM Hash Distance, "
                   "L2 Distance ITFGSM, "
-                  "L2 Distance MT-ITFGSM, "
+                  "L2 Distance MT-IFGSM, "
                   "SSIM ITFGSM, "
-                  "SSIM MT-ITFGSM",
+                  "SSIM MT-IFGSM",
            comments='')
 np.savetxt("vit_stealthy_results.csv", vit_results, delimiter=",",
            header="ITFGSM Hash Distance, "
-                  "MT-ITFGSM Hash Distance, "
+                  "MT-IFGSM Hash Distance, "
                   "L2 Distance ITFGSM, "
-                  "L2 Distance MT-ITFGSM, "
+                  "L2 Distance MT-IFGSM, "
                   "SSIM ITFGSM, "
-                  "SSIM MT-ITFGSM",
+                  "SSIM MT-IFGSM",
            comments='')
 
 print("###################################")
@@ -114,28 +114,28 @@ resnet_mean = np.mean(resnet_results, axis=0)
 vit_mean = np.mean(vit_results, axis=0)
 print("CNN Average Metrics:")
 print("ITFGSM Hash Distance:", cnn_mean[0])
-print("MT-ITFGSM Hash Distance:", cnn_mean[1])
+print("MT-IFGSM Hash Distance:", cnn_mean[1])
 print("L2 Distance ITFGSM:", cnn_mean[2])
-print("L2 Distance MT-ITFGSM:", cnn_mean[3])
+print("L2 Distance MT-IFGSM:", cnn_mean[3])
 print("SSIM ITFGSM:", cnn_mean[4])
-print("SSIM MT-ITFGSM:", cnn_mean[5])
+print("SSIM MT-IFGSM:", cnn_mean[5])
 print("###################################")
 
 print("ResNet Average Metrics:")
 print("ITFGSM Hash Distance:", resnet_mean[0])
-print("MT-ITFGSM Hash Distance:", resnet_mean[1])
+print("MT-IFGSM Hash Distance:", resnet_mean[1])
 print("L2 Distance ITFGSM:", resnet_mean[2])
-print("L2 Distance MT-ITFGSM:", resnet_mean[3])
+print("L2 Distance MT-IFGSM:", resnet_mean[3])
 print("SSIM ITFGSM:", resnet_mean[4])
-print("SSIM MT-ITFGSM:", resnet_mean[5])
+print("SSIM MT-IFGSM:", resnet_mean[5])
 print("###################################")
 
 print("ViT Average Metrics:")
 print("ITFGSM Hash Distance:", vit_mean[0])
-print("MT-ITFGSM Hash Distance:", vit_mean[1])
+print("MT-IFGSM Hash Distance:", vit_mean[1])
 print("L2 Distance ITFGSM:", vit_mean[2])
-print("L2 Distance MT-ITFGSM:", vit_mean[3])
+print("L2 Distance MT-IFGSM:", vit_mean[3])
 print("SSIM ITFGSM:", vit_mean[4])
-print("SSIM MT-ITFGSM:", vit_mean[5])
+print("SSIM MT-IFGSM:", vit_mean[5])
 print("###################################")
 print("Finished")
