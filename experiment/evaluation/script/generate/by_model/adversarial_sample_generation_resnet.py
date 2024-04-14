@@ -20,6 +20,10 @@ ITERS = 4
 
 
 if __name__ == "__main__":
+    cuda_available = torch.cuda.is_available()
+    device = torch.device("cuda" if cuda_available else "cpu")
+    print(f"Using device: {device}")
+
     # Load the dataset
     transform = transforms.Compose([
         transforms.Resize((224, 224)),  # 224x224 is the input size for ResNet
@@ -29,7 +33,7 @@ if __name__ == "__main__":
     dataset = ChestXrayDataset(transform=transform)
     print("Loaded dataset: ChestXrayDataset")
 
-    state_dict = torch.load(MODEL_PATH)
+    state_dict = torch.load(MODEL_PATH, map_location=device)
     model = models.resnet18(pretrained=False)
     num_features = model.fc.in_features
     model.fc = nn.Linear(num_features, dataset.get_num_classes())

@@ -10,21 +10,33 @@ from dataset.dataset import ChestXrayDataset
 class ThreeLayerCNN(nn.Module):
     def __init__(self, image_input_channels, num_classes):
         super(ThreeLayerCNN, self).__init__()
-        self.conv1 = nn.Conv2d(image_input_channels, 32, kernel_size=3, padding=1)
-        self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
-        self.conv3 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
-        self.pool = nn.MaxPool2d(2, 2)
-        self.fc1 = nn.Linear(128 * 28 * 28, 512)
-        self.fc2 = nn.Linear(512, num_classes)
 
-    def forward(self, x):
-        x = self.pool(F.relu(self.conv1(x)))
-        x = self.pool(F.relu(self.conv2(x)))
-        x = self.pool(F.relu(self.conv3(x)))
-        x = x.view(-1, 128 * 28 * 28) 
-        x = F.relu(self.fc1(x))
-        x = self.fc2(x)
-        return x
+        # Image branch
+        self.image_conv = nn.Sequential(
+            nn.Conv2d(image_input_channels, 64, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2), 
+
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            nn.Conv2d(128, 256, kernel_size=3, padding=1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size=2, stride=2)
+        )
+
+        self.fusion_layer = nn.Linear(256 * 28 * 28, num_classes)
+
+    def forward(self, image_input):
+        # Image branch
+        image_features = self.image_conv(image_input)
+        image_features = image_features.view(image_features.size(0), -1)
+
+        # Fusion
+        output = self.fusion_layer(image_features)
+
+        return output
 
 if __name__ == "__main__":
 
@@ -63,7 +75,7 @@ if __name__ == "__main__":
     model.to(device)
 
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.BCEWithLogitsLoss()
 
     # Step 3. Train the model
     for epoch in range(num_epochs):
@@ -78,6 +90,7 @@ if __name__ == "__main__":
             optimizer.step()
             total_loss += loss.item()
         print(f"Epoch {epoch + 1}/{num_epochs}, Loss: {total_loss / len(train_loader)}")
+        torch.save(model.state_dict(), f'chest_xray_cnn_three_layer_{epoch}_epochs.pth')
 
     # Step 4. Save the model
     torch.save(model.state_dict(), model_path)
