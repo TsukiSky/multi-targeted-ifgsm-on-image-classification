@@ -36,6 +36,11 @@ class TwoLayerCNN(nn.Module):
 
 if __name__ == "__main__":
     torch.manual_seed(100)
+
+    cuda_available = torch.cuda.is_available()
+    device = torch.device("cuda" if cuda_available else "cpu")
+    print(f"Using device: {device}")
+
     # Configuration
     image_input_channels = 3
     num_classes = 15
@@ -60,6 +65,7 @@ if __name__ == "__main__":
 
     # Model initialization
     model = TwoLayerCNN(image_input_channels, num_classes)
+    model.to(device)
 
     # Loss function and optimizer
     criterion = nn.BCEWithLogitsLoss()
