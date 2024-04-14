@@ -4,10 +4,10 @@ import torch
 from torchvision import transforms
 from attack.mtifgsm import MtIfgsm
 from dataset.dataset import ChestXrayDataset
-from experiment.victim_model.cnn.cnn import TwoLayerCNN as CNN
+from experiment.victim_model.cnn_two_layer.cnn_two_layer import TwoLayerCNN
 from config import Configuration
 
-MODEL_PATH = os.path.join(Configuration.VICTIM_MODEL_PATH, "cnn", "chest_xray_cnn.pth")
+MODEL_PATH = os.path.join(Configuration.VICTIM_MODEL_PATH, "cnn_two_layer", "chest_xray_cnn_two_layer.pth")
 SAVE_IMAGE = True
 SAVE_IMAGE_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), "images")
 NUM_SAMPLES = 1
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     print("Loaded dataset: ChestXrayDataset")
 
     # Load the ParallelCRNN model
-    model = CNN(image_input_channels=3, num_classes=dataset.get_num_classes())
+    model = TwoLayerCNN(image_input_channels=3, num_classes=dataset.get_num_classes())
     model.load_state_dict(torch.load(MODEL_PATH))
     model.eval()
     print("Loaded model:", MODEL_PATH)

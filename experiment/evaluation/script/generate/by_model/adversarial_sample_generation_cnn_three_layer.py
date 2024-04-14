@@ -1,5 +1,5 @@
 import os
-from experiment.victim_model.cnn.cnn_three_layer import ThreeLayerCNN
+from experiment.victim_model.cnn_three_layer.cnn_three_layer import ThreeLayerCNN
 import torch
 from torchvision import transforms
 from attack.mtifgsm import MtIfgsm
@@ -7,7 +7,7 @@ from dataset.dataset import ChestXrayDataset
 
 from config import Configuration
 
-MODEL_PATH = os.path.join(Configuration.VICTIM_MODEL_PATH, "cnn", "chest_xray_cnn_three_layer.pth")
+MODEL_PATH = os.path.join(Configuration.VICTIM_MODEL_PATH, "cnn_three_layer", "chest_xray_cnn_three_layer.pth")
 SAVE_IMAGE = True
 SAVE_IMAGE_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), "images")
 NUM_SAMPLES = 1

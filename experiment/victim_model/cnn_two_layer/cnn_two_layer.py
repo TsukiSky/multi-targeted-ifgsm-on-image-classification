@@ -39,7 +39,7 @@ if __name__ == "__main__":
     # Configuration
     image_input_channels = 3
     num_classes = 15
-    model_path = "chest_xray_cnn.pth"
+    model_path = "chest_xray_cnn_two_layer.pth"
     learning_rate = 0.001
     batch_size = 32
     num_epochs = 10

@@ -7,8 +7,8 @@ import torch.nn as nn
 
 from config import Configuration
 from experiment.victim_model.vit.vit import ViT
-from experiment.victim_model.cnn.cnn import TwoLayerCNN
-from experiment.victim_model.cnn.cnn_three_layer import ThreeLayerCNN
+from experiment.victim_model.cnn_two_layer.cnn_two_layer import TwoLayerCNN
+from experiment.victim_model.cnn_three_layer.cnn_three_layer import ThreeLayerCNN
 from experiment.evaluation.evaluator import Evaluator
 from experiment.evaluation.generator import Generator, AttackMethod
 
@@ -16,6 +16,10 @@ import warnings
 
 
 warnings.filterwarnings("ignore")
+
+cuda_available = torch.cuda.is_available()
+device = torch.device("cuda" if cuda_available else "cpu")
+print(f"Using device: {device}")
 
 TEST_SAMPLES = 1000
 ITER = 10
@@ -38,13 +42,13 @@ train_dataset, test_dataset = torch.utils.data.random_split(dataset, [train_size
 print("Loaded dataset: ChestXrayDataset")
 
 cnn_model = TwoLayerCNN(image_input_channels=3, num_classes=dataset.get_num_classes())
-cnn_model.load_state_dict(torch.load(Configuration.CNN_MODEL_PATH))
+cnn_model.load_state_dict(torch.load(Configuration.CNN_MODEL_PATH, map_location=device))
 cnn_model.eval()
 cnn_generator = Generator(cnn_model, AttackMethod.BOTH)
 print("Loaded CNN model:", Configuration.CNN_MODEL_PATH)
 
 cnn_three_layer_model = ThreeLayerCNN(image_input_channels=3, num_classes=dataset.get_num_classes())
-cnn_three_layer_model.load_state_dict(torch.load(Configuration.CNN_MODEL_PATH))
+cnn_three_layer_model.load_state_dict(torch.load(Configuration.CNN_THREE_LAYER_MODEL_PATH, map_location=device))
 cnn_three_layer_model.eval()
 cnn_three_layer_generator = Generator(cnn_three_layer_model, AttackMethod.BOTH)
 print("Loaded CNN model:", Configuration.CNN_THREE_LAYER_MODEL_PATH)
@@ -52,14 +56,14 @@ print("Loaded CNN model:", Configuration.CNN_THREE_LAYER_MODEL_PATH)
 resnet_model = models.resnet18(pretrained=False)
 num_features = resnet_model.fc.in_features
 resnet_model.fc = nn.Linear(num_features, dataset.get_num_classes())
-resnet_model.load_state_dict(torch.load(Configuration.RESNET_MODEL_PATH))
+resnet_model.load_state_dict(torch.load(Configuration.RESNET_MODEL_PATH, map_location=device))
 resnet_model.eval()
 resnet_generator = Generator(resnet_model, AttackMethod.BOTH)
 print("Loaded RESNET model:", Configuration.RESNET_MODEL_PATH)
 
 vit_model = ViT(in_channels=3, patch_size=16, embedding_size=768, img_size=224, num_heads=4, num_layers=4,
                 num_classes=15)
-vit_model.load_state_dict(torch.load(Configuration.VIT_MODEL_PATH))
+vit_model.load_state_dict(torch.load(Configuration.VIT_MODEL_PATH, map_location=device))
 vit_model.eval()
 vit_generator = Generator(vit_model, AttackMethod.BOTH)
 print("Loaded VIT model:", Configuration.VIT_MODEL_PATH)
