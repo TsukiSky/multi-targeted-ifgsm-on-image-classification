@@ -1,3 +1,3 @@
 from .attack import Attack
-from .mtitfgsm import MtItfgsm
+from .mtifgsm import MtIfgsm
 from .itfgsm import Itfgsm

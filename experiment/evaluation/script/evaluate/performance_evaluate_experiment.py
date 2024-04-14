@@ -109,18 +109,18 @@ vit_mt_itfgsm_hamming_loss = vit_results[:, 3].mean()
 print("Summary:")
 print("CNN ITFGSM Accuracy:", cnn_itfgsm_accuracy)
 print("CNN ITFGSM Hamming Loss:", cnn_itfgsm_hamming_loss)
-print("CNN MT-ITFGSM Accuracy:", cnn_mt_itfgsm_accuracy)
-print("CNN MT-ITFGSM Hamming Loss:", cnn_mt_itfgsm_hamming_loss)
+print("CNN MT-IFGSM Accuracy:", cnn_mt_itfgsm_accuracy)
+print("CNN MT-IFGSM Hamming Loss:", cnn_mt_itfgsm_hamming_loss)
 print("-----------------------------------")
 print("RESNET ITFGSM Accuracy:", resnet_itfgsm_accuracy)
 print("RESNET ITFGSM Hamming Loss:", resnet_itfgsm_hamming_loss)
-print("RESNET MT-ITFGSM Accuracy:", resnet_mt_itfgsm_accuracy)
-print("RESNET MT-ITFGSM Hamming Loss:", resnet_mt_itfgsm_hamming_loss)
+print("RESNET MT-IFGSM Accuracy:", resnet_mt_itfgsm_accuracy)
+print("RESNET MT-IFGSM Hamming Loss:", resnet_mt_itfgsm_hamming_loss)
 print("-----------------------------------")
 print("VIT ITFGSM Accuracy:", vit_itfgsm_accuracy)
 print("VIT ITFGSM Hamming Loss:", vit_itfgsm_hamming_loss)
-print("VIT MT-ITFGSM Accuracy:", vit_mt_itfgsm_accuracy)
-print("VIT MT-ITFGSM Hamming Loss:", vit_mt_itfgsm_hamming_loss)
+print("VIT MT-IFGSM Accuracy:", vit_mt_itfgsm_accuracy)
+print("VIT MT-IFGSM Hamming Loss:", vit_mt_itfgsm_hamming_loss)
 print("###################################")
 print("Saving Results")
 data = np.array([[
@@ -144,16 +144,16 @@ np.savetxt("performance_results.csv",
            fmt='%.4f',
            header="CNN ITFGSM Accuracy, "
                   "CNN ITFGSM Hamming Loss, "
-                  "CNN MT-ITFGSM Accuracy, "
-                  "CNN MT-ITFGSM Hamming Loss, "
+                  "CNN MT-IFGSM Accuracy, "
+                  "CNN MT-IFGSM Hamming Loss, "
                   "RESNET ITFGSM Accuracy, "
                   "RESNET ITFGSM Hamming Loss, "
-                  "RESNET MT-ITFGSM Accuracy, "
-                  "RESNET MT-ITFGSM Hamming Loss, "
+                  "RESNET MT-IFGSM Accuracy, "
+                  "RESNET MT-IFGSM Hamming Loss, "
                   "ViT ITFGSM Accuracy, "
                   "ViT ITFGSM Hamming Loss, "
-                  "ViT MT-ITFGSM Accuracy, "
-                  "ViT MT-ITFGSM Hamming Loss",
+                  "ViT MT-IFGSM Accuracy, "
+                  "ViT MT-IFGSM Hamming Loss",
            comments='')
 print("###################################")
 print("Finished!")

@@ -1,6 +1,6 @@
 from enum import Enum
 from attack.itfgsm import Itfgsm
-from attack.mtitfgsm import MtItfgsm
+from attack.mtifgsm import MtIfgsm
 from torchvision import transforms
 
 import os
@@ -18,7 +18,7 @@ class Generator:
         model.eval()
         self.attack_method = attack_method
         self.itfgsm = Itfgsm(model)
-        self.mt_itfgsm = MtItfgsm(model)
+        self.mt_itfgsm = MtIfgsm(model)
 
     def generate(self, image, original_label, iter=5, epsilon=0.001, percentage=0.2, save_image=False, path=""):
         itfgsm_image = None
@@ -26,10 +26,10 @@ class Generator:
         if self.attack_method == AttackMethod.ITFGSM:
             itfgsm_image = self.itfgsm.untargeted_attack(image, original_label, epsilon, iter)
         elif self.attack_method == AttackMethod.MT_ITFGSM:
-            mt_itfgsm_image = self.mt_itfgsm.mt_itfgsm_attack(image, original_label, epsilon, iter, percentage)
+            mt_itfgsm_image = self.mt_itfgsm.mt_ifgsm_attack(image, original_label, epsilon, iter, percentage)
         else:
             itfgsm_image = self.itfgsm.untargeted_attack(image, original_label, epsilon, iter)
-            mt_itfgsm_image = self.mt_itfgsm.mt_itfgsm_attack(image, original_label, epsilon, iter, percentage)
+            mt_itfgsm_image = self.mt_itfgsm.mt_ifgsm_attack(image, original_label, epsilon, iter, percentage)
 
         if save_image:
             transforms.ToPILImage()(image.squeeze(0)).save(os.path.join(path, "original.png"))

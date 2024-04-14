@@ -53,13 +53,13 @@ class Evaluator:
         if self.log_values:
             print("###################### Hash Sensitive Difference ######################")
             print("Original and ITFGSM Image Hash Sensitive Difference:", original_itfgsm_distance)
-            print("Original and MT-ITFGSM Image Hash Sensitive Difference:", original_mt_itfgsm_distance)
+            print("Original and MT-IFGSM Image Hash Sensitive Difference:", original_mt_itfgsm_distance)
             print("############################# L2 Distance #############################")
             print("L2 Distance between Original and ITFGSM Image:", l2_distance_itfgsm)
-            print("L2 Distance between Original and MT-ITFGSM Image:", l2_distance_mt_itfgsm)
+            print("L2 Distance between Original and MT-IFGSM Image:", l2_distance_mt_itfgsm)
             print("############################# SSIM #############################")
             print("SSIM between Original and ITFGSM Image:", ssim_itfgsm)
-            print("SSIM between Original and MT-ITFGSM Image:", ssim_mt_itfgsm)
+            print("SSIM between Original and MT-IFGSM Image:", ssim_mt_itfgsm)
 
         return original_itfgsm_distance, original_mt_itfgsm_distance, l2_distance_itfgsm, l2_distance_mt_itfgsm, ssim_itfgsm, ssim_mt_itfgsm
 

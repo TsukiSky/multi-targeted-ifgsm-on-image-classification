@@ -4,7 +4,7 @@ from torchvision import transforms, models
 import torch
 import torch.nn as nn
 
-from attack.mtitfgsm import MtItfgsm
+from attack.mtifgsm import MtIfgsm
 from dataset.dataset import ChestXrayDataset
 
 from config import Configuration
@@ -46,12 +46,12 @@ if __name__ == "__main__":
     model.eval()
     print("Loaded model: " + MODEL_PATH)
 
-    attack = MtItfgsm(model)
+    attack = MtIfgsm(model)
 
     for i in range(NUM_SAMPLES):
         image, label = dataset[i]
         image_untargeted = attack.untargeted_attack(image, label, epsilon=EPSILON, iters=ITERS)
-        image_stealthy_untargeted = attack.mt_itfgsm_attack(image, label, percentage=STEALTHY_ATTACK_PERCENTAGE, epsilon=EPSILON, iters=ITERS)
+        image_stealthy_untargeted = attack.mt_ifgsm_attack(image, label, percentage=STEALTHY_ATTACK_PERCENTAGE, epsilon=EPSILON, iters=ITERS)
 
         if SAVE_IMAGE:
             transforms.ToPILImage()(image.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "vit_original_" + str(i) + ".png"))
@@ -73,4 +73,4 @@ if __name__ == "__main__":
         print("#### Sample:", i, "####")
         print("Original Image Prediction:", torch.nonzero(output, as_tuple=True)[1].tolist())
         print("ITFGSM Attack Image Prediction:", torch.nonzero(output_untargeted, as_tuple=True)[1].tolist())
-        print("MT-ITFGSM Attack Image Prediction:", torch.nonzero(output_stealthy_untargeted, as_tuple=True)[1].tolist())
+        print("MT-IFGSM Attack Image Prediction:", torch.nonzero(output_stealthy_untargeted, as_tuple=True)[1].tolist())

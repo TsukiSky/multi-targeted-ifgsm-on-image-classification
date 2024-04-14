@@ -4,13 +4,13 @@ from attack.attack import Attack
 from attack.itfgsm import Itfgsm
 
 
-class MtItfgsm(Attack):
+class MtIfgsm(Attack):
     """
-    MTITFGSM: Multi-Targeted Iterative Fast Gradient Sign Method
+    MT-IFGSM: Multi-Targeted Iterative Fast Gradient Sign Method
     """
 
     def __init__(self, model):
-        super(MtItfgsm, self).__init__("MTITFGSM", model)
+        super(MtIfgsm, self).__init__("MTIFGSM", model)
         self.model.eval()
 
     def target_attack(self, image, target_label, epsilon=0.01, iters=10):
@@ -21,7 +21,7 @@ class MtItfgsm(Attack):
         itfgsm = Itfgsm(self.model)
         return itfgsm.untargeted_attack(image, ori_label, epsilon, iters)
 
-    def mt_itfgsm_attack(self, image, ori_label, epsilon=0.01, iters=10, percentage=0.5):
+    def mt_ifgsm_attack(self, image, ori_label, epsilon=0.01, iters=10, percentage=0.5):
         """
         stealthy untargeted attack is designed to make the multi-targeted attack more stealthy
         - instead of perturbing the image to the completely wrong direction, we identify the top-k
