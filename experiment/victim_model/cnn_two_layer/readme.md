@@ -8,7 +8,7 @@ A straightforward Convolutional Neural Network with two convolutional layers fol
 ## Performance
 The model has been evaluated using standard classification metrics:
 
-- **Accuracy:** 38.02%
-- **Hamming Loss:** 0.0771
+- **Accuracy:** ~~38.02%~~ 39.34%
+- **Hamming Loss:** ~~0.0771~~ 0.0775
 
 These metrics reflect the preliminary results obtained under our current experimental setup.
