@@ -9,7 +9,7 @@ from config import Configuration
 
 ORIGINAL_IMAGE_PATH =os.path.join(Configuration.PERTURBED_IMAGE_PATH, "original_image.png")
 ADVERSARIAL_IMAGE_PATH = os.path.join(Configuration.PERTURBED_IMAGE_PATH, "itfgsm.png")
-STEALTHY_ADVERSARIAL_IMAGE_PATH = os.path.join(Configuration.PERTURBED_IMAGE_PATH, "mt_itfgsm.png")
+STEALTHY_ADVERSARIAL_IMAGE_PATH = os.path.join(Configuration.PERTURBED_IMAGE_PATH, "mt_ifgsm.png")
 
 if __name__ == "__main__":
     original_image = Image.open(ORIGINAL_IMAGE_PATH)

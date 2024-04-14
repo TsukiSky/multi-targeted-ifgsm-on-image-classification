@@ -78,15 +78,15 @@ vit_results = []
 for i in range(TEST_SAMPLES):
     image, label = test_dataset[i]
     print("#### Sample:", i, " Evaluating ... ####")
-    cnn_itfgsm_image, cnn_mt_itfgsm_image = cnn_generator.generate(image, label, ITER, EPSILON, PERCENTAGE)
-    cnn_three_layer_itfgsm_image, cnn_three_layer_mt_itfgsm_image = cnn_three_layer_generator.generate(image, label, ITER, EPSILON, PERCENTAGE)
-    resnet_itfgsm_image, resnet_mt_itfgsm_image = resnet_generator.generate(image, label, ITER, EPSILON, PERCENTAGE)
-    vit_itfgsm_image, vit_mt_itfgsm_image = vit_generator.generate(image, label, ITER, EPSILON, PERCENTAGE)
+    cnn_itfgsm_image, cnn_mt_ifgsm_image = cnn_generator.generate(image, label, ITER, EPSILON, PERCENTAGE)
+    cnn_three_layer_itfgsm_image, cnn_three_layer_mt_ifgsm_image = cnn_three_layer_generator.generate(image, label, ITER, EPSILON, PERCENTAGE)
+    resnet_itfgsm_image, resnet_mt_ifgsm_image = resnet_generator.generate(image, label, ITER, EPSILON, PERCENTAGE)
+    vit_itfgsm_image, vit_mt_ifgsm_image = vit_generator.generate(image, label, ITER, EPSILON, PERCENTAGE)
 
-    cnn_metrics = evaluator.evaluate_stealthiness(image, cnn_itfgsm_image, cnn_mt_itfgsm_image)
-    cnn_three_layer_metrics = evaluator.evaluate_stealthiness(image, cnn_three_layer_itfgsm_image, cnn_three_layer_mt_itfgsm_image)
-    resnet_metrics = evaluator.evaluate_stealthiness(image, resnet_itfgsm_image, resnet_mt_itfgsm_image)
-    vit_metrics = evaluator.evaluate_stealthiness(image, vit_itfgsm_image, vit_mt_itfgsm_image)
+    cnn_metrics = evaluator.evaluate_stealthiness(image, cnn_itfgsm_image, cnn_mt_ifgsm_image)
+    cnn_three_layer_metrics = evaluator.evaluate_stealthiness(image, cnn_three_layer_itfgsm_image, cnn_three_layer_mt_ifgsm_image)
+    resnet_metrics = evaluator.evaluate_stealthiness(image, resnet_itfgsm_image, resnet_mt_ifgsm_image)
+    vit_metrics = evaluator.evaluate_stealthiness(image, vit_itfgsm_image, vit_mt_ifgsm_image)
 
     cnn_results.append(cnn_metrics)
     cnn_three_layer_results.append(cnn_three_layer_metrics)

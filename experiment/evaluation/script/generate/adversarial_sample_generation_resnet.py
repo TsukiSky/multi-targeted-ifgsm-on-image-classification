@@ -51,7 +51,7 @@ if __name__ == "__main__":
         if SAVE_IMAGE:
             transforms.ToPILImage()(image.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "resnet_original_" + str(i) + ".png"))
             transforms.ToPILImage()(image_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "resnet_itfgsm_" + str(i) + ".png"))
-            transforms.ToPILImage()(image_stealthy_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "resnet_mt_itfgsm_" + str(i) + ".png"))
+            transforms.ToPILImage()(image_stealthy_untargeted.squeeze(0)).save(os.path.join(SAVE_IMAGE_PATH, "resnet_mt_ifgsm_" + str(i) + ".png"))
 
         # evaluate the attack results
         model.eval()
