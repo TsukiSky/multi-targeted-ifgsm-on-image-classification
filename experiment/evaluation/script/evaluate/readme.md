@@ -1,4 +1,5 @@
 ## Stealthiness Evaluation Results
+
 **CNN Average Metrics:**
 ITFGSM Hash Distance: 0.314
 MT-IFGSM Hash Distance: 0.3
@@ -23,7 +24,7 @@ L2 Distance MT-IFGSM: 3.827579924106598
 SSIM ITFGSM: 0.9557166385054588
 SSIM MT-IFGSM: 0.9552195736765862
 
-**Performance Summary:**
+## Performance Evaluation Results
 CNN ITFGSM Accuracy: 0.0
 CNN ITFGSM Hamming Loss: 0.21293334052711727
 CNN MT-IFGSM Accuracy: 0.001
@@ -38,7 +39,6 @@ VIT ITFGSM Accuracy: 0.581
 VIT ITFGSM Hamming Loss: 0.06906666938960553
 VIT MT-IFGSM Accuracy: 0.581
 VIT MT-IFGSM Hamming Loss: 0.06906666938960553
-
 
 
 
